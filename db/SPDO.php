@@ -36,6 +36,16 @@ class SPDO
     private $connectName = null;
 
 
+    public function __construct($connectName=false)
+    {
+        if(empty(self::$configureStack)) {
+            echo 'configure is empty';
+        }
+        if($connectName)
+            $this->initConnect($connectName);
+    }
+
+
     /**
      * Return current connection name or compare $connectName to current connection name
      *
@@ -160,16 +170,6 @@ class SPDO
     }
 
 
-    public function __construct($connectName=false)
-    {
-        if(empty(self::$configureStack)) {
-            echo 'configure is empty';
-        }
-        if($connectName)
-            $this->initConnect($connectName);
-    }
-
-
     /**
      * Set the connection to the database on name connect() with the configuration
      * parameters note in the parameter method setConfigure();
@@ -177,7 +177,7 @@ class SPDO
      * @param string $connectName
      * @param string $sql
      * @param array $prepare
-     * @return $this | \PDOStatement | null
+     * @return SPDO | \PDOStatement | null
      */
     public function initConnect($connectName, $sql='', $prepare = [])
     {
@@ -209,7 +209,7 @@ class SPDO
     }
 
 
-    /** @var SPDO null */
+    /** @var SPDO | null */
     private static $instance = null;
 
 
@@ -233,8 +233,8 @@ class SPDO
      */
     public static function initStaticConnect($connectName, $sql='', $prepare = [])
     {
-        $dbCall = self::getInstance();
-        return $dbCall->initConnect($connectName, $sql, $prepare);
+        $instance = self::getInstance();
+        return $instance->initConnect($connectName, $sql, $prepare);
     }
 
 

@@ -48,5 +48,3 @@ SPDO::setConfigure(
             ]
     ]
 );
-
-require_once('./test_model.php');

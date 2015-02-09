@@ -1,5 +1,7 @@
 <?php
 # .
+require_once('./test_config.php');
+
 use \db\SPDO;
 
 

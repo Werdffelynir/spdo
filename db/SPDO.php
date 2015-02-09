@@ -1,4 +1,18 @@
 <?php
+/**
+ * Simple PDO wrapper
+ *
+ * @link https://github.com/Werdffelynir/spdo
+ * @author OL Werdffelynir <werdffelynir@gmail.com>
+ * @created 08.02.15
+ * @license  GNU AGPLv3 https://gnu.org/licenses/agpl.html
+ * @since 0.1
+ */
+
+/**
+ * Core file
+ */
+
 
 namespace db;
 

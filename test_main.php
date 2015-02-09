@@ -1,13 +1,27 @@
 <?php
+/**
+ * Simple PDO wrapper
+ *
+ * @link https://github.com/Werdffelynir/spdo
+ * @author OL Werdffelynir <werdffelynir@gmail.com>
+ * @created 08.02.15
+ * @license  GNU AGPLv3 https://gnu.org/licenses/agpl.html
+ */
 
-# .include main class to connection
+/**
+ * Mini doc and examples
+ */
+
+
+# .include handle class
 require_once('./db/SPDO.php');
 
 use \db\SPDO;
 
+
 /*
 # .Назначения:
-
+-
 
 # .Требования:
 - PHP 5.4 +
@@ -17,7 +31,6 @@ print_r(\PDO::getAvailableDrivers());
 # .Рекомендации:
 - использувать базу данных с поддержкой transactions. Например для MySQL InnoDB
 */
-
 
 
 # .this configuration see and use all instances created after
@@ -35,8 +48,5 @@ SPDO::setConfigure(
             ]
     ]
 );
-
-
-
 
 require_once('./test_model.php');

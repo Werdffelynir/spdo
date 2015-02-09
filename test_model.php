@@ -25,14 +25,24 @@ $spdo = new SPDO('dbMySql');
 
 
 # .прямые запросы
-//$crw = $spdo->dbh()->exec("INSERT pages SET title='Some page', content='Some text'");
+/*
+$sql = "INSERT pages SET title='Some page', content='Some text'";
+$crw = $spdo->dbh()->exec($sql);
+$crw = SPDO::initStaticConnect('dbMySql')->dbh()->exec($sql); //or with new connectName
+*/
+
+/*
+$sth = $spdo->dbh()->query("SELECT * FROM pages WHERE id = 1");
+*/
+
+/*
 $sth = $spdo->dbh()->prepare("INSERT pages SET title=?, content=?");
 $sth->execute(['Some page 2','Some text 2']);
 $crw = $sth->rowCount();
 $iid = $spdo->dbh()->lastInsertId();
-var_dump($iid);
+*/
 
-//SPDO::initStaticConnect('dbMySql')->dbh()->exec('');
+
 
 
 # .

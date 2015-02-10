@@ -7,7 +7,7 @@ namespace db;
 class SBuilder
 {
     /** @var SPDO  */
-    public $spdo = null;
+    private $spdo = null;
 
     /** @var null | \PDOStatement */
     private $sth = null;
@@ -35,6 +35,13 @@ class SBuilder
         $this->initConnect($connectName);
     }
 
+    /**
+     * @return SPDO
+     */
+    public function spdo()
+    {
+        return $this->spdo;
+    }
 
     /**
      * @param $connectName

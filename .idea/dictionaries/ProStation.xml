@@ -2,6 +2,7 @@
   <dictionary name="ProStation">
     <words>
       <w>ndbc</w>
+      <w>userid</w>
     </words>
   </dictionary>
 </component>

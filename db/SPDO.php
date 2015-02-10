@@ -414,6 +414,7 @@ class SPDO
     /**
      * Wrapper for query such as SELECT
      *
+     *<pre>
      * Example:
      * ->querySelect('column1, column2', 'table', 'type = ? AND subtype = ?', ['my_type','my_subtype'])
      *  OR
@@ -421,6 +422,7 @@ class SPDO
      *
      * returns an object PDOStatement, use standard methods for its further work,
      * such fetch() OR fetchAll().
+     * </pre>
      *
      * @param string $column
      * @param string $tableName
@@ -445,6 +447,7 @@ class SPDO
      * Example:
      * ->queryDelete('table','type = ? AND subtype = ?', [ 'data', 'subdata' ]);
      * </pre>
+     *
      * @param $tableName
      * @param $criteria
      * @param array $prepare

@@ -79,7 +79,7 @@ $updateRows = $mdb->execute();
 */
 
 /*
-$spdo = $mdb->spdo;
+$spdo = $mdb->spdo();
 $insertId = $spdo->queryInsert('pages',[
     'title' => 'Some title',
     'content' => 'Some data',

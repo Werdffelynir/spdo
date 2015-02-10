@@ -21,6 +21,7 @@ use \PDOStatement;
 
 class SPDO
 {
+
     private static $configureStack = [];
 
     /** @var \PDO $dbh database handle */
@@ -318,10 +319,10 @@ class SPDO
 
 
     /** @var null|callable */
-    private $callBefore= null;
+    private $callBefore = null;
 
     /** @var null|callable  */
-    private $callAfter= null;
+    private $callAfter = null;
 
     /**
      * Устанавлевает и вызывает callable перед выполнением запроса querySql()
@@ -346,7 +347,7 @@ class SPDO
      * Wrapper for query such as INSERT
      *
      * Example:
-     * ->insert('table',
+     * ->queryInsert('table',
      *      [
      *          'column1' => 'some data',
      *          'column2' => 123456789,
@@ -357,7 +358,7 @@ class SPDO
      * @param array $columnData
      * @return mixed Returns the ID of the last inserted row or sequence value
      */
-    public function insert($tableName, array $columnData)
+    public function queryInsert($tableName, array $columnData)
     {
         $columns = array_keys($columnData);
 
@@ -375,7 +376,7 @@ class SPDO
      * Wrapper for query such as UPDATE
      *<pre>
      * Example:
-     * ->update('table',
+     * ->queryUpdate('table',
      *      [
      *       'val1'=>'some data',
      *       'val2'=>'some data'
@@ -394,7 +395,7 @@ class SPDO
      * @param array $prepare
      * @return string Returned number of rows affected by the last SQL statement
      */
-    public function update($tableName, array $columnData, $criteria, $prepare=[])
+    public function queryUpdate($tableName, array $columnData, $criteria, $prepare=[])
     {
         $columns = array_keys($columnData);
         $criteria = preg_replace('|:\w+|',' ? ', $criteria);
@@ -414,9 +415,9 @@ class SPDO
      * Wrapper for query such as SELECT
      *
      * Example:
-     * ->select('column1, column2', 'table', 'type = ? AND subtype = ?', ['my_type','my_subtype'])
+     * ->querySelect('column1, column2', 'table', 'type = ? AND subtype = ?', ['my_type','my_subtype'])
      *  OR
-     * ->select('*', 'table', 'id<:id AND author LIKE :at', [':id'=>'10',':at'=>'%dmi%']);
+     * ->querySelect('*', 'table', 'id<:id AND author LIKE :at', [':id'=>'10',':at'=>'%dmi%']);
      *
      * returns an object PDOStatement, use standard methods for its further work,
      * such fetch() OR fetchAll().
@@ -427,7 +428,7 @@ class SPDO
      * @param array  $prepare
      * @return bool|\PDOStatement
      */
-    public function select($column, $tableName, $criteria = '', array $prepare=[])
+    public function querySelect($column, $tableName, $criteria = '', array $prepare=[])
     {
         $where = !empty($criteria)?' WHERE ':'';
         $sql = sprintf("SELECT %s FROM %s",
@@ -442,14 +443,14 @@ class SPDO
      * Wrapper for query such as DELETE
      *<pre>
      * Example:
-     * ->delete('table','type = ? AND subtype = ?', [ 'data', 'subdata' ]);
+     * ->queryDelete('table','type = ? AND subtype = ?', [ 'data', 'subdata' ]);
      * </pre>
      * @param $tableName
      * @param $criteria
      * @param array $prepare
      * @return string Returned number of rows affected by the last SQL statement
      */
-    public function delete($tableName, $criteria, array $prepare=[])
+    public function queryDelete($tableName, $criteria, array $prepare=[])
     {
 
         $sql = sprintf("DELETE FROM %s WHERE %s",

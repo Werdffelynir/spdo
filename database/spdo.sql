@@ -31,6 +31,7 @@ CREATE TABLE pages (
   id int(11) NOT NULL AUTO_INCREMENT,
   title varchar(200) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'New title',
   content longtext COLLATE utf8_unicode_ci,
+  public int(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 1,
   createrecord timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

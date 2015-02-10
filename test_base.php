@@ -35,6 +35,15 @@ $crw = SPDO::initStaticConnect('dbMySql')->dbh()->exec($sql); //or with new conn
 
 /*
 $sth = $spdo->dbh()->query("SELECT * FROM pages WHERE id = 1");
+$record = $sth->fetch();
+*/
+
+/*
+$sth = $spdo->dbh()->prepare('SELECT * FROM pages WHERE id <= :id AND public = :bc');
+$sth->bindValue(':id', 5, \PDO::PARAM_INT);
+$sth->bindValue(':bc', 1, \PDO::PARAM_INT);
+$sth->execute();
+$record = $sth->fetchAll();
 */
 
 /*
@@ -53,11 +62,11 @@ $iid = $spdo->dbh()->lastInsertId();
 
 
 # .
-//$records = $spdo->select('*','pages')->fetchAll();
+//$records = $spdo->querySelect('*','pages')->fetchAll();
 
 
 # .
-//$insertId = $spdo->insert('pages',
+//$insertId = $spdo->queryInsert('pages',
 //    [
 //        'title' => 'New Title',
 //        'content' => 'New Content',
@@ -66,7 +75,7 @@ $iid = $spdo->dbh()->lastInsertId();
 
 
 # .
-//$numUpdatesRecords = $spdo->update('pages',
+//$numUpdatesRecords = $spdo->queryUpdate('pages',
 //    [
 //        'title' => 'Change Title',
 //        'content' => 'Change Content',
@@ -76,7 +85,7 @@ $iid = $spdo->dbh()->lastInsertId();
 
 
 # .
-//$numDeletesRecords = $spdo->delete('pages','id = ?', [ 3 ]);
+//$numDeletesRecords = $spdo->queryDelete('pages','id = ?', [ 3 ]);
 
 
 # .

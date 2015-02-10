@@ -15,6 +15,7 @@
 
 # .include handle class
 require_once('./db/SPDO.php');
+require_once('./db/SBuilder.php');
 
 use \db\SPDO;
 

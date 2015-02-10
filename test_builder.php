@@ -157,43 +157,13 @@ $mdb->condition([
 $res = $mdb->executeAll();
 */
 
-var_dump($res);
-
-//var_dump($mdb->getSql());
 
 
-/*
-$mdb->select('*')
-    ->from('pages')
-    ->where('id = :id AND public = :pb')
-    ->bind(':id', $id, \PDO::PARAM_INT)
-    ->bind(':pb', $public, \PDO::PARAM_INT);
 
-$mdb->select('title, content, createrecord')
-    ->from('pages')
-    ->where('id = :id AND public = :pb')
-    ->binds([
-            ':id'=>$id,
-            ':pb'=>$public,
-        ]);
+//var_dump($res);
 
-$mdb->select('p.title',
-            'p.content',
-            'p.createrecord',
-            'u.author')
-    ->from('pages p')
-    ->leftJoin('users u', 'u.id = p.userid')
-    ->where('p.id = ?')
-    ->and('p.public = ?')
-    ->orderBy('p.id DESC')
-    ->orderBy('p.id','DESC');
 
-$mdb->bind(':id', $id, \PDO::PARAM_INT)
-    ->bind(':id', $id, \PDO::PARAM_INT);
 
-$result = $mdb->execOne();
-$result = $mdb->execAll();
-*/
 
 
 

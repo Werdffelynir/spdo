@@ -163,7 +163,8 @@ class SBuilder
         return $this;
     }
     public function set(array $columns){
-        $this->buildSql .= ' SET '.join(", ",array_map(function($val){return $val."=:".$val;},array_keys($columns)));
+        $paramsKey = array_keys($columns);
+        $this->buildSql .= ' SET '.join(", ",array_map(function($val){return $val."=:".$val;},$paramsKey));
         $this->buildCondition = array_merge($this->buildCondition,$columns);
         return $this;
     }
@@ -174,7 +175,6 @@ class SBuilder
         $this->buildCondition = array_merge($this->buildCondition,$columns);
         return $this;
     }
-
 
     public function clear(){
         $this->buildSql = '';
@@ -195,9 +195,7 @@ class SBuilder
     public function bind($parameter, $value, $dataType=\PDO::PARAM_STR, $length=0, $driverOptions=[])
     {
         if($this->sth) {
-            $isBind = $this->sth->bindParam($parameter, $value, $dataType, $length, $driverOptions);
-            if($isBind)
-                return $this;
+            $this->sth->bindParam($parameter, $value, $dataType, $length, $driverOptions);
         }else{
             $this->condition([$parameter=>$value]);
         }

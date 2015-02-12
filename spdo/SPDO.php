@@ -224,7 +224,7 @@ class SPDO
         $this->sql = ['prepare'=>null,'parameters'=>null];
         $this->sth = null;
         if($completeClose) {
-            self::$instance = null;
+            self::$instances[$this->connectName] = null;
             $this->connectName = null;
             $this->dbh = null;
         }

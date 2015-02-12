@@ -33,7 +33,10 @@ class SBuilder
     public function __construct($connectName=false)
     {
         $this->initConnect($connectName);
+        $this->init();
     }
+
+    public function init(){}
 
     /**
      * @return SPDO
@@ -60,7 +63,7 @@ class SBuilder
     /**
      * @return SBuilder
      */
-    private static function getInstance()
+    protected static function getInstance()
     {
         if(self::$instance==null){
             self::$instance = new self();

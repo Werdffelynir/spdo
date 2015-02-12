@@ -21,27 +21,31 @@ class SModel extends SBuilder
     public function __construct($connectName=false)
     {
         parent::__construct($connectName);
-
         $this->calledTable();
-        $this->init();
     }
 
 
-    public function init(){}
-
     /**
-     * @param string $className
-
-    public static function model($className = __CLASS__)
+     * @param $className
+     */
+    public static function model($className=true)
     {
-        if (isset(self::$models[$className])) {
+        $calledClass = get_called_class();
+
+        var_dump(self::getInstance());
+
+        var_dump($calledClass);
+        $model = new $calledClass();
+        return $model;
+
+        /*if (isset(self::$models[$className])) {
             return self::$models[$className];
         } else {
 
             $model = self::$models[$className] = new $className();
             return $model;
-        }
-    } */
+        }*/
+    }
 
 
     private function calledTable()

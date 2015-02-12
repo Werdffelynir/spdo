@@ -2,6 +2,8 @@
   <dictionary name="ProStation">
     <words>
       <w>ndbc</w>
+      <w>passwd</w>
+      <w>rowset</w>
       <w>userid</w>
     </words>
   </dictionary>

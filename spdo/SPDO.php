@@ -1,23 +1,11 @@
 <?php
-/**
- * Simple PDO wrapper
- *
- * @link https://github.com/Werdffelynir/spdo
- * @author OL Werdffelynir <werdffelynir@gmail.com>
- * @created 08.02.15
- * @license  GNU AGPLv3 https://gnu.org/licenses/agpl.html
- * @since 0.1
- */
 
-/**
- * Core file
- */
+namespace spdo;
 
 
-namespace db;
-
-use \PDO;
-use \PDOStatement;
+class SPDOException extends \RuntimeException {
+    public $errorInfo;
+}
 
 class SPDO
 {
@@ -31,33 +19,18 @@ class SPDO
     private $sth;
 
     /** @var array  */
-    private $sql = ['sql'=>null,'prepare'=>null];
+    private $sql = ['prepare'=>null,'parameters'=>null];
 
     /** @var null|string */
     private $connectName = null;
 
 
-    public function __construct($connectName=false)
+    public function __construct($connectName='db', $initConnect=true)
     {
-        if(empty(self::$configureStack)) {
-            echo 'configure is empty';
-        }
-        if($connectName)
+        if(empty(self::$configureStack))
+            throw new SPDOException("SPDO::setConfigure() the connection settings to the database must be installed before");
+        if($initConnect)
             $this->initConnect($connectName);
-    }
-
-
-    /**
-     * Return current connection name or compare $connectName to current connection name
-     *
-     * @param bool | string $connectName
-     * @return bool | null | string
-     */
-    public function getConnectName($connectName=false)
-    {
-        if($connectName===false)
-            return $this->connectName;
-        return $connectName===$this->connectName;
     }
 
 
@@ -124,23 +97,6 @@ class SPDO
 
 
     /**
-     * Returns the last line with the prepared SQL parameters
-     * @param bool $withPrepare
-     * @return string
-     */
-    public function getLastSql($withPrepare=true)
-    {
-        if($withPrepare){
-            $_sql = "{".$this->sql['sql']."}\n";
-            foreach((array)$this->sql['prepare'] as $place => $value)
-                $_sql .= 'bind '. ((is_numeric($place)) ? '?'.(string)($place+1) : $place).' = '.$value ."\n";
-            return $_sql;
-        }
-        return $this->sql['sql'];
-    }
-
-
-    /**
      * Принимает массив конфигурационных праметров подключения.
      *
      * Example:
@@ -153,126 +109,153 @@ class SPDO
      *      'mySql' =>
      *          [
      *              'dns' => 'mysql:host=localhost;dbname=database',
-     *              'user' => 'root',
+     *              'username' => 'root',
      *              'password' => '',
+     *              'options' => [],
      *          ]
      *  ]);
-     * @param array $conf
+     * @param array $configure
      */
-    public static function setConfigure(array $conf)
+    public static function setConfigure(array $configure)
     {
-        foreach ($conf as $name => $val) {
+        foreach ($configure as $name => $val) {
             self::$configureStack[$name] = [
                 'dns' => $val['dns'],
-                'user' => !empty($val['user'])?$val['user']:null,
-                'password' => !empty($val['password'])?$val['password']:null
+                'username' => !empty($val['username'])?$val['username']:null,
+                'password' => !empty($val['password'])?$val['password']:null,
+                'options'  => !empty($val['options'])?$val['options']:[]
             ];
         }
     }
 
 
+    /** @var array $instances */
+    private static $instances = [];
+
+
     /**
-     * Set the connection to the database on name connect() with the configuration
-     * parameters note in the parameter method setConfigure();
+     * @param string $connectName
+     * @return null|SPDO
+     */
+    protected static function getInstance($connectName)
+    {
+        if(!isset(self::$instances[$connectName]) || self::$instances[$connectName] == null){
+            self::$instances[$connectName] = new self($connectName);
+        }
+        return self::$instances[$connectName];
+    }
+
+
+    /**
+     * Статическая инициализация подключения по connectName
      *
      * @param string $connectName
-     * @param string $sql
-     * @param array $prepare
      * @return SPDO|null
      */
-    public function initConnect($connectName, $sql='', $prepare = [])
+    public static function init($connectName='db')
     {
-        $this->clean(false);
+        /** @var SPDO $instance */
+        $instance = self::getInstance($connectName);
+        return self::getInstance($connectName);
+    }
+
+
+    /**
+     * Инициализация подключения по connectName
+     *
+     * @param string $connectName
+     * @return SPDO|SPDOException
+     */
+    public function initConnect($connectName='db')
+    {
+        $this->clearConnect(false);
+        $connectName = $connectName=='db' ? key(self::$configureStack) : $connectName;
 
         if(!empty(self::$configureStack[$connectName]))
         {
-            if($this->dbh == null && $this->connectName != $connectName)
+            if($this->dbh == null || $this->connectName != $connectName)
             {
-                $cnf = self::$configureStack[$connectName];
-                $dbh = $this->connect($cnf['dns'],$cnf['user'],$cnf['password']);
-
-                $this->connectName = $connectName;
-                $this->dbh = $dbh;
-            }
-            else
-                return $this->dbh;
-
-            # .if the transmitted argument(s)
-            if(empty($sql)){
-                return $this;
-            }else{
-                $sth = $this->querySql($sql, $prepare);
-                return $sth;
+                $configure = self::$configureStack[$connectName];
+                $dbHandle = $this->_connector($configure['dns'], $configure['username'], $configure['password'], $configure['options']);
+                if($dbHandle){
+                    $this->connectName = $connectName;
+                    $this->dbh = $dbHandle;
+                }
+                else
+                    throw new SPDOException('Failed to create object instance \ PDO initialization connection parameters');
             }
         }
         else
-            return false;
-    }
-
-
-    /** @var SPDO | null */
-    private static $instance = null;
-
-
-    /**
-     * @return SPDO
-     */
-    private static function getInstance()
-    {
-        if(self::$instance==null){
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-
-
-    /**
-     * @param $connectName
-     * @param $sql
-     * @param $prepare
-     * @return  SPDO | \PDOStatement
-     */
-    public static function initStaticConnect($connectName, $sql='', $prepare = [])
-    {
-        $instance = self::getInstance();
-        return $instance->initConnect($connectName, $sql, $prepare);
+            throw new SPDOException("Error initializing, connectName: $connectName not found in the configuration of connection parameters");
+        return $this;
     }
 
 
     /**
      * @param $dsn
-     * @param $user
+     * @param $username
      * @param $password
-     * @return \PDO
+     * @param $options
+     * @return \PDO|SPDOException
      */
-    private function connect($dsn, $user, $password)
+    private function _connector($dsn, $username, $password, $options)
     {
         try {
-            $dbh = new \PDO($dsn, $user, $password);
+            $dbh = new \PDO($dsn, $username, $password, $options);
             $dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             $dbh->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
             $dbh->setAttribute(\PDO::MYSQL_ATTR_INIT_COMMAND, 'SET NAMES \'UTF8\'');
             return $dbh;
         }
-        catch(\PDOException $e) {
+        catch(SPDOException $e) {
             echo $e->getMessage();
+        }
+        throw new SPDOException("Ошибка при создании подключения new PDO. Возможны ошибки в параметрах класса dsn, username, password");
+    }
+
+
+    /**
+     * Cleaning params or fulled close connection
+     * @param bool $completeClose
+     * @return void
+     */
+    public function clearConnect($completeClose = true)
+    {
+        $this->sql = ['prepare'=>null,'parameters'=>null];
+        $this->sth = null;
+        if($completeClose) {
+            self::$instance = null;
+            $this->connectName = null;
+            $this->dbh = null;
         }
     }
 
 
     /**
-     * Cleaning params connection
-     *
-     * @param bool $all
+     * Возвращает текущее имя подключения connectName или сравнивает параметр с текущим.
+     * @param string $connectName
+     * @return bool|string
      */
-    public function clean($all=true)
+    public function getConnectName($connectName='')
     {
-        $this->sql = ['sql'=>null,'prepare'=>null];
-        $this->sth = null;
-        if($all){
-            $this->connectName = null;
-            $this->dbh = null;
+        return $connectName == '' ? $this->connectName : $connectName === $this->connectName;
+    }
+
+
+    /**
+     * Returns the last line with the parameters SQL parameters
+     * @param bool $withParameters
+     * @return string
+     */
+    public function getLastSql($withParameters=true)
+    {
+        if($withParameters){
+            $_sql = "{".$this->sql['prepare']."}\n";
+            foreach((array)$this->sql['parameters'] as $place => $value)
+                $_sql .= 'bind '. ((is_numeric($place)) ? '?'.(string)($place+1) : $place).' = '.$value ."\n";
+            return $_sql;
         }
+        return $this->sql['prepare'];
     }
 
 
@@ -292,29 +275,28 @@ class SPDO
      *  );
      *</pre>
      *
-     * @param $sql
-     * @param array $prepare
+     * @param $prepare
+     * @param array $parameters
      * @return bool | \PDOStatement
      */
-    public function querySql($sql, array $prepare=[])
+    public function querySql($prepare, array $parameters=[])
     {
         if($this->dbh)
         {
-            $this->clean(false);
-            $this->sql['sql'] = $sql;
-            $this->sql['prepare'] = !empty($prepare)?$prepare:[];
+            $this->clearConnect(false);
+            $this->sql['prepare'] = $prepare;
+            $this->sql['parameters'] = !empty($parameters)?$parameters:[];
 
             if(is_callable($this->callBefore)) call_user_func($this->callBefore);
 
-            $this->sth = $this->dbh->prepare($this->sql['sql']);
-            $this->sth->execute($this->sql['prepare']);
+            $this->sth = $this->dbh->prepare($this->sql['prepare']);
+            $this->sth->execute($this->sql['parameters']);
 
             if(is_callable($this->callAfter)) call_user_func($this->callAfter);
 
             return $this->sth;
-        }else{
-            return false;
         }
+        throw new SPDOException('Ошибка не создн экземпляр объекта \PDO $this->dbh. Необходима инициализация подключения.');
     }
 
 
@@ -324,14 +306,18 @@ class SPDO
     /** @var null|callable  */
     private $callAfter = null;
 
+
     /**
      * Устанавлевает и вызывает callable перед выполнением запроса querySql()
+     * Прим: все запросы $this->query[Insert,Select,Update,Delete]() работают через $this->querySql()
+     *
      * @param callable $parameters
      */
     public function callAfterQuery(callable $parameters)
     {
         $this->callAfter = $parameters;
     }
+
 
     /**
      * Устанавлевает и вызывает callable после выполнением запроса querySql()
@@ -345,7 +331,7 @@ class SPDO
 
     /**
      * Wrapper for query such as INSERT
-     *
+     *<pre>
      * Example:
      * ->queryInsert('table',
      *      [
@@ -353,6 +339,7 @@ class SPDO
      *          'column2' => 123456789,
      *      ]
      *  );
+     *</pre>
      *
      * @param $tableName
      * @param array $columnData
@@ -383,23 +370,23 @@ class SPDO
      *      ],
      *      'type = ? AND subtype = ?', [ 'data', 'subdata' ]
      *  );
-     * </pre>
+     *</pre>
      *
      * Сформирует что-то подобное:
      * UPDATE table SET val1 = ?, val2 = ? WHERE type = ? AND subtype = ?
-     * и $prepare подготовит со всеми значениями для запроса.
+     * и $parameters подготовит со всеми значениями для запроса.
      *
      * @param string $tableName
      * @param array $columnData
      * @param string $criteria
-     * @param array $prepare
+     * @param array $parameters
      * @return string Returned number of rows affected by the last SQL statement
      */
-    public function queryUpdate($tableName, array $columnData, $criteria, $prepare=[])
+    public function queryUpdate($tableName, array $columnData, $criteria, $parameters=[])
     {
         $columns = array_keys($columnData);
         $criteria = preg_replace('|:\w+|',' ? ', $criteria);
-        $prepare = array_values(array_merge($columnData,$prepare));
+        $parameters = array_values(array_merge($columnData,$parameters));
 
         $sql = sprintf("UPDATE %s SET %s WHERE %s",
             $tableName,
@@ -407,7 +394,7 @@ class SPDO
             $criteria
         );
 
-        return $this->querySql($sql, $prepare)->rowCount();
+        return $this->querySql($sql, $parameters)->rowCount();
     }
 
 
@@ -422,15 +409,15 @@ class SPDO
      *
      * returns an object PDOStatement, use standard methods for its further work,
      * such fetch() OR fetchAll().
-     * </pre>
+     *</pre>
      *
      * @param string $column
      * @param string $tableName
      * @param string $criteria
-     * @param array  $prepare
+     * @param array  $parameters
      * @return bool|\PDOStatement
      */
-    public function querySelect($column, $tableName, $criteria = '', array $prepare=[])
+    public function querySelect($column, $tableName, $criteria = '', array $parameters=[])
     {
         $where = !empty($criteria)?' WHERE ':'';
         $sql = sprintf("SELECT %s FROM %s",
@@ -438,7 +425,7 @@ class SPDO
             $tableName.$where.$criteria
         );
 
-        return $this->querySql($sql, $prepare);
+        return $this->querySql($sql, $parameters);
     }
 
     /**
@@ -446,21 +433,21 @@ class SPDO
      *<pre>
      * Example:
      * ->queryDelete('table','type = ? AND subtype = ?', [ 'data', 'subdata' ]);
-     * </pre>
+     *</pre>
      *
      * @param $tableName
      * @param $criteria
-     * @param array $prepare
+     * @param array $parameters
      * @return string Returned number of rows affected by the last SQL statement
      */
-    public function queryDelete($tableName, $criteria, array $prepare=[])
+    public function queryDelete($tableName, $criteria, array $parameters=[])
     {
 
         $sql = sprintf("DELETE FROM %s WHERE %s",
             $tableName,
             $criteria
         );
-        return $this->querySql($sql, $prepare)->rowCount();
+        return $this->querySql($sql, $parameters)->rowCount();
     }
 
     /**
@@ -474,15 +461,24 @@ class SPDO
     }
 
 
-
     /**
-     * Транзакция совокупность запросов базу данных.
+     * Определение начало транзакции.
      * Поле определения метода необходимо подтвердить или опровергнуть транзакцию.
      * @return bool
      */
     public function transactionBegin()
     {
         return $this->dbh->beginTransaction();
+    }
+
+
+    /**
+     * Checks if inside a transaction
+     * @return bool
+     */
+    public function transactionIn()
+    {
+        return $this->dbh->inTransaction();
     }
 
 
@@ -495,14 +491,6 @@ class SPDO
         return $this->dbh->commit();
     }
 
-    /**
-     * Checks if inside a transaction
-     * @return bool
-     */
-    public function transactionIn()
-    {
-        return $this->dbh->inTransaction();
-    }
 
     /**
      * Отмена и откат запросов транзакции
@@ -512,7 +500,5 @@ class SPDO
     {
         return $this->dbh->rollback();
     }
-
-
 
 }

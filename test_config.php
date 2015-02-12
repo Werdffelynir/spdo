@@ -38,15 +38,21 @@ print_r(\PDO::getAvailableDrivers());
 # .this configuration see and use all instances created after
 SPDO::setConfigure(
     [
-        'dbLite'=>
+        'db'=>
             [
-                'dns'=>'sqlite:../database/spdo.sqlite'
+                'dns'=>'mysql:host=127.0.0.1;dbname=spdo',
+                'user'=>'root',
+                'password'=>''
             ],
         'dbMySql'=>
             [
                 'dns'=>'mysql:host=127.0.0.1;dbname=spdo',
                 'user'=>'root',
                 'password'=>''
+            ],
+        'dbLite'=>
+            [
+                'dns'=>'sqlite:../database/spdo.sqlite'
             ]
     ]
 );

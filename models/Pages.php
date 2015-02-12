@@ -12,16 +12,6 @@ class Pages extends SModel
 
     public $primaryKey = 'id';
 
-/*
-    public static function model($className = __CLASS__)
-    {
-        //$className = __CLASS__;
-
-        $model = parent::model($className);
-        //var_dump($model);
-        return $model;
-    }*/
-
     public function init()
     {
         # .table и primaryKey может быть указан в методе init() или в занчении свойства

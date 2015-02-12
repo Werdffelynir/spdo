@@ -1,12 +1,26 @@
-
+<?php
 # .
-require_once('./test_config.php');
+require_once('./config.php');
 
-use \db\SPDO;
+use \spdo\SPDO;
+
+
+# .подключиться по умрлчанию, берет конфигурацию с именем connectName "db"
+SPDO::init();
+
+$spdo = SPDO::init();
+
+$result = $spdo
+    ->querySql('SELECT * FROM pages')
+    ->fetchAll();
+
+var_dump($result);
+
+
 
 
 # .подключиться по имени конфигурации базы данных (connectName), через конструктор
-$spdo = new SPDO('dbMySql');
+//$spdo = new SPDO('dbMySql');
 
 
 # .иной способ, так же возвращает экземпляр класса
@@ -89,84 +103,6 @@ $iid = $spdo->dbh()->lastInsertId();
 
 
 # .
-
-
-/**
- * Статический относительно универсальный метод подключения соединения через connectName и возможность
- * выполнить запрос
- *
- * @param string $connectName
- * @param string $sql
- * @param array $parameters
- * @return bool|\PDOStatement|SPDO|SPDOException
- */
-public static function getStaticQuery($connectName='db', $sql='', $parameters = [])
-{
-    $instance = self::getInstance();
-    if(!$instance->dbh || $instance->connectName != $connectName){
-        $instance = $instance->initConnect($connectName);
-    if(!$instance)
-        throw new SPDOException('Failed to create object instance \PDO when trying to initialize a static method');
-    }
-    return empty($sql) ?
-        $instance :
-        $instance->querySql($sql,$parameters);
-}
-
-
-# .
-
-/** @var SPDO | null */
-private static $instance = null;
-
-/** @var array $instances */
-private static $instances = [];
-
-
-/**
- * @param string $connectName
- * @return null|SPDO
- */
-protected static function getInstance($connectName)
-{
-    if(!isset(self::$instances[$connectName]) || self::$instance == null){
-        self::$instance[$connectName] = new self($connectName);
-    }
-    return self::$instance[$connectName];
-}
-
-
-
-    /**
-     * Статическая инициализация подключения по connectName
-     *
-     * @param string $connectName
-     * @return SPDO|null
-     */
-    public static function init($connectName='db')
-{
-    /** @var SPDO $instance */
-    $instance = self::getInstance($connectName);
-    return self::getInstance($connectName);
-}
-
-
-/**
-* Статический метод подключения соединения через connectName
-* @param string $connectName
-* @return SPDO|SPDOException
-
-public static function connect($connectName='db')
-{
-$instance = self::getInstance();
-if(!$instance->dbh || $instance->connectName != $connectName){
-$instance = $instance->initConnect($connectName);
-if(!$instance)
-throw new SPDOException('Failed to create object instance \PDO when trying to initialize a static method');
-}
-return $instance;
-}*/
-
 
 
 

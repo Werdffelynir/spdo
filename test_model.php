@@ -11,14 +11,14 @@ use \db\SModel;
 # .подключиться по имени конфигурации базы данных (connectName), через конструктор
 //$pages = new Pages('dbMySql');
 
-//SModel::initStaticConnect('dbMySql');
+SModel::initStaticConnect('dbMySql');
 
 //$model = new Pages();
 
 //$model = Pages::initStaticConnect('dbMySql');
 
-//$model = Pages::model();
-//var_dump($model);
+$model = Pages::model();
+var_dump($model);
 
 //$allPages = $pages->allPages();
 //var_dump($allPages);

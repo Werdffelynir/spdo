@@ -67,7 +67,7 @@ class SModel extends SBuilder
      * @param array $parameters
      * @return bool|\PDOStatement
      */
-    public function comboSelect($column, $criteria = '', array $parameters=[])
+    public function tableSelect($column, $criteria = '', array $parameters=[])
     {
         return $this->querySelect($column, $this->table, $criteria, $parameters);
     }
@@ -76,7 +76,7 @@ class SModel extends SBuilder
      * @param string $columnData
      * @return mixed
      */
-    public function comboInsert($columnData)
+    public function tableInsert($columnData)
     {
         return $this->queryInsert($this->table, $columnData);
     }
@@ -87,7 +87,7 @@ class SModel extends SBuilder
      * @param array $parameters
      * @return string
      */
-    public function comboUpdate(array $columnData, $criteria, $parameters=[])
+    public function tableUpdate(array $columnData, $criteria, $parameters=[])
     {
         return $this->queryUpdate($this->table, $columnData, $criteria, $parameters);
     }
@@ -97,9 +97,53 @@ class SModel extends SBuilder
      * @param array $parameters
      * @return string
      */
-    public function comboDelete($criteria, array $parameters=[])
+    public function tableDelete($criteria, array $parameters=[])
     {
         return $this->queryDelete($this->table, $criteria, $parameters);
     }
+
+
+    /**
+     * @param null $condition
+     * @param array $conditionParams
+     * @return int
+     */
+    public function tableCount($condition = null, array $conditionParams = [])
+    {
+        return parent::count($this->table, $condition, $conditionParams);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getById($id)
+    {
+        return parent::querySelect('*', $this->table, $this->primaryKey.'=:id', [':id'=>$id])
+            ->fetch();
+    }
+
+    /**
+     * @param $attr
+     * @param $val
+     * @return mixed
+     */
+    public function getOneByAttr($attr,$val)
+    {
+        return parent::querySelect('*', $this->table, $attr.'=:attr', [':attr'=>$val])
+            ->fetch();
+    }
+
+    /**
+     * @param $attr
+     * @param $val
+     * @return array
+     */
+    public function getAllByAttr($attr,$val)
+    {
+        return parent::querySelect('*', $this->table, $attr.'=:attr', [':attr'=>$val])
+            ->fetchAll();
+    }
+
 
 }

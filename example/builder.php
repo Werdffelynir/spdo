@@ -24,6 +24,7 @@ $db = new SBuilder();
 
 
 
+
 # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 # -> Выборка без включения параметров
 
@@ -228,6 +229,23 @@ $rowCount = $db->delete('pages')
 
 // $buildSql - будет пуст
 $buildSql = $db->getLastBuildSql();
+
+
+
+
+# -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+# -> counter
+
+$count = $db->count('pages');
+var_dump($count);
+
+$count = $db->count('pages', 'userid = 1');
+var_dump($count);
+
+
+
+# -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+# ->
 
 
 

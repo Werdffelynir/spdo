@@ -272,6 +272,7 @@ class SBuilder extends SPDO
      * Clear SQL builder line
      */
     public function clear(){
+        $this->sth = null;
         $this->buildPrepare = '';
         $this->buildParameters = [];
     }
@@ -444,6 +445,43 @@ class SBuilder extends SPDO
     {
         return $this->sth->rowCount();
     }
+
+
+    /**
+     * Возвращает количество записей
+     * <pre>
+     * ->count('table');
+     * ->count('table','id >= :num',['num'=>$num]);
+     * </pre>
+     *
+     * @param $table
+     * @param string $condition
+     * @param array $params
+     * @return int
+     */
+    public function count($table, $condition='', $params=[])
+    {
+        $fetchAll['count'] = null;
+
+        if(empty($condition))
+        {
+            $obj = $this->select('COUNT(*) as count')
+                ->from($table);
+        }
+        else
+        {
+            $obj = $this->select('COUNT(*) as count')
+                ->from($table)
+                ->where($condition);
+        }
+
+        $fetchAll = $obj->executeOne($params);
+
+        return (int) $fetchAll['count'];
+    }
+
+
+    //public function lastId($table, $condition='', $params=[]) {}
 
 
 }

@@ -16,15 +16,15 @@ use \spdo\SPDO;
 # -> Creates a new instance of a new connection, a designer can specify the name of the connection, the default is the first of the array configuration.
 $spdo = new SPDO();
 //анаоргично
-//$spdo = SPDO::open([connect name]);
+$spdo = SPDO::open(/*[connect name]*/);
 
 
 # -> Один экземпляр может иметь соединение только с одной db. Переключение соединения осуществляется новым открытием подключения.
-//$spdo->openConnect('lite');
+$spdo->openConnect('lite');
 
 
 # -> Для работы одновременно с несколькими db просто создайте несколько екземпляров
-/*
+/**/
 $dbBase = SPDO::open('db');
 $dbLite = SPDO::open('lite');
 
@@ -36,8 +36,8 @@ $result2 = $dbLite
     ->querySql('SELECT * FROM article')
     ->fetchAll();
 
-var_dump($result1,$result2);
-*/
+//var_dump($result1,$result2);
+
 
 
 
@@ -48,8 +48,8 @@ $record = $spdo
     ->querySql(
         'SELECT * FROM pages WHERE id = ? AND public=?',
         [
-            "1",
-            "1"
+            1,
+            1
         ]
     )
     ->fetch();

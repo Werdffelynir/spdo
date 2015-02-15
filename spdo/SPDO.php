@@ -529,4 +529,9 @@ class SPDO
         return $this->dbh->rollback();
     }
 
+    /** DB exist and connection
+    public function exists($db = null) { }
+    */
+
+
 }

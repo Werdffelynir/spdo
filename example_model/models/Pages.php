@@ -19,7 +19,7 @@ class Pages extends SModel
         $this->table = 'pages';
         $this->primaryKey = 'id';
 
-        $this->openConnect('dbMySql');
+        $this->openConnect('db');
     }
 
 

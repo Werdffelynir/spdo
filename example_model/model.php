@@ -18,7 +18,7 @@ use \models\Users;
 //$model = Pages::open('db'); // wrong, its returned instance SPDO
 
 
-$model = new Pages('dbMySql');
+$model = new Pages('db');
 
 
 # -> Static connect
@@ -46,24 +46,24 @@ var_dump(
 
 
 # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
-# -> comboSelect()
+# -> tableSelect()
 
-$result = $model->comboSelect('*');
-
-
-# ->
-$result = $model->comboSelect('*','public = 1');
+$result = $model->tableSelect('*');
 
 
 # ->
-$result = $model->comboSelect('*','public = ?',[1]);
+$result = $model->tableSelect('*','public = 1');
+
+
+# ->
+$result = $model->tableSelect('*','public = ?',[1]);
 
 
 
 # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
-# -> comboInsert()
+# -> tableInsert()
 
-$result = $model->comboInsert(
+$result = $model->tableInsert(
     [
         'title' => 'Some Title',
         'content' => 'Some Content Data',
@@ -74,9 +74,9 @@ $result = $model->comboInsert(
 
 
 # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
-# -> comboUpdate()
+# -> tableUpdate()
 
-$result = $model->comboUpdate(
+$result = $model->tableUpdate(
     [
         'title' => 'Some Title',
         'content' => 'Some Content Data',
@@ -91,9 +91,9 @@ $result = $model->comboUpdate(
 
 
 # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
-# -> comboDelete()
+# -> tableDelete()
 
-$result = $model->comboDelete(
+$result = $model->tableDelete(
     'id = ?',
     [
         13
@@ -101,6 +101,23 @@ $result = $model->comboDelete(
 );
 
 
+
+
+
+# -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+# ->
+
+$result = $model->tableSelect('*')->fetchAll();
+
+$result = $model->tableCount();
+
+$result = $model->tableCount('public = 1');
+
+$result = $model->getById(1);
+
+$result = $model->getOneByAttr('userid',175);
+
+$result = $model->getAllByAttr('userid',175);
 
 
 

@@ -1,4 +1,12 @@
 <?php
+/**
+ * Simple PDO wrapper
+ *
+ * @link https://github.com/Werdffelynir/spdo
+ * @author OL Werdffelynir <werdffelynir@gmail.com>
+ * @created 08.02.15
+ * @license  GNU AGPLv3 https://gnu.org/licenses/agpl.html
+ */
 
 namespace spdo;
 
@@ -53,22 +61,42 @@ class SModel extends SBuilder
         }
     }
 
-
+    /**
+     * @param string $column
+     * @param string $criteria
+     * @param array $parameters
+     * @return bool|\PDOStatement
+     */
     public function comboSelect($column, $criteria = '', array $parameters=[])
     {
         return $this->querySelect($column, $this->table, $criteria, $parameters);
     }
 
+    /**
+     * @param string $columnData
+     * @return mixed
+     */
     public function comboInsert($columnData)
     {
         return $this->queryInsert($this->table, $columnData);
     }
 
+    /**
+     * @param array $columnData
+     * @param $criteria
+     * @param array $parameters
+     * @return string
+     */
     public function comboUpdate(array $columnData, $criteria, $parameters=[])
     {
         return $this->queryUpdate($this->table, $columnData, $criteria, $parameters);
     }
 
+    /**
+     * @param $criteria
+     * @param array $parameters
+     * @return string
+     */
     public function comboDelete($criteria, array $parameters=[])
     {
         return $this->queryDelete($this->table, $criteria, $parameters);

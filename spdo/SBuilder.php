@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Simple PDO wrapper
+ *
+ * @link https://github.com/Werdffelynir/spdo
+ * @author OL Werdffelynir <werdffelynir@gmail.com>
+ * @created 08.02.15
+ * @license  GNU AGPLv3 https://gnu.org/licenses/agpl.html
+ */
 
 namespace spdo;
 
@@ -21,6 +28,7 @@ class SBuilder extends SPDO
      *  ->select('column, column, column')
      *  ->select('a.column, a.column, b.column')
      * </pre>
+     *
      * @param $columns
      * @return $this
      */
@@ -32,7 +40,7 @@ class SBuilder extends SPDO
 
     /**
      * Use for insert alternative syntax:
-     * INSERT $table SET key=value, key=value
+     * INSERT $table SET ( column_name = column_value, ... );
      * <pre>
      * Example:
      *  ->insert($table)
@@ -41,6 +49,7 @@ class SBuilder extends SPDO
      *          column=> value,
      *      ]);
      * </pre>
+     *
      * @param string $table
      * @return $this
      */
@@ -52,7 +61,7 @@ class SBuilder extends SPDO
 
     /**
      * Use for insert default syntax:
-     * INSERT INTO $table (key, ...) VALUES (value, ...);
+     *INSERT INTO $table (column_name, ...) VALUES (column_value, ...);
      * <pre>
      * Example:
      *  ->insertInto($table)
@@ -61,6 +70,7 @@ class SBuilder extends SPDO
      *          column=> value,
      *      ]);
      * </pre>
+     *
      * @param string $table
      * @return $this
      */
@@ -76,6 +86,7 @@ class SBuilder extends SPDO
      * Example:
      *
      * </pre>
+     *
      * @param string $table
      * @return $this
      */

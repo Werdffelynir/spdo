@@ -1,4 +1,12 @@
 <?php
+/**
+ * Simple PDO wrapper
+ *
+ * @link https://github.com/Werdffelynir/spdo
+ * @author OL Werdffelynir <werdffelynir@gmail.com>
+ * @created 08.02.15
+ * @license  GNU AGPLv3 https://gnu.org/licenses/agpl.html
+ */
 
 namespace spdo;
 
@@ -99,17 +107,17 @@ class SPDO
 
     /**
      * Принимает массив конфигурационных праметров подключения.
-     *
+     * Data source name
      * Example:
      * CLASS::setConfigure(
      *  [
      *      'db' =>
      *          [
-     *              'dns' => 'sqlite:path/to/database.sqlite'
+     *              'dsn' => 'sqlite:path/to/database.sqlite'
      *          ],
      *      'mySql' =>
      *          [
-     *              'dns' => 'mysql:host=localhost;dbname=database',
+     *              'dsn' => 'mysql:host=localhost;dbname=database',
      *              'username' => 'root',
      *              'password' => '',
      *              'options' => [],
@@ -121,7 +129,7 @@ class SPDO
     {
         foreach ($configure as $name => $val) {
             self::$configureStack[$name] = [
-                'dns' => $val['dns'],
+                'dsn' => $val['dsn'],
                 'username' => !empty($val['username'])?$val['username']:null,
                 'password' => !empty($val['password'])?$val['password']:null,
                 'options'  => !empty($val['options'])?$val['options']:[]
@@ -177,7 +185,7 @@ class SPDO
             if($this->dbh == null || $this->connectName != $connectName)
             {
                 $configure = self::$configureStack[$connectName];
-                $dbHandle = $this->_connector($configure['dns'], $configure['username'], $configure['password'], $configure['options']);
+                $dbHandle = $this->_connector($configure['dsn'], $configure['username'], $configure['password'], $configure['options']);
                 if($dbHandle){
                     $this->connectName = $connectName;
                     $this->dbh = $dbHandle;
@@ -221,7 +229,7 @@ class SPDO
         catch(SPDOException $e) {
             echo $e->getMessage();
         }
-        throw new SPDOException("Ошибка при создании подключения new PDO. Возможны ошибки в параметрах класса dsn, username, password");
+        throw new SPDOException("Error connect. check settings config - dsn, username, password");
     }
 
 

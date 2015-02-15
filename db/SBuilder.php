@@ -135,7 +135,6 @@ class SBuilder
         $this->buildSql .= ' DELETE FROM '.$table.' ';
         return $this;
     }
-
     public function from($table){
         $this->buildSql .= ' FROM '.$table.' ';
         return $this;

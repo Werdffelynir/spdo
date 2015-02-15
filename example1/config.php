@@ -34,7 +34,7 @@ require_once('./spdo/SModel.php');
             ],
         'dbLite'=>
             [
-                'dns'=>'sqlite:../database/spdo.sqlite'
+                'dns'=>'sqlite:database/spdo.sqlite'
             ]
     ]
 );

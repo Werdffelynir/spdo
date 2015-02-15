@@ -13,10 +13,10 @@ class SPDO
     private static $configureStack = [];
 
     /** @var \PDO $dbh database handle */
-    private $dbh;
+    protected $dbh;
 
     /** @var \PDOStatement $sth statement handle */
-    private $sth;
+    protected $sth;
 
     /** @var array  */
     private $sql = ['prepare'=>null,'parameters'=>null];
@@ -25,12 +25,13 @@ class SPDO
     private $connectName = null;
 
 
-    public function __construct($connectName='db', $initConnect=true)
+    public function __construct($connectName='', $initConnect=true)
     {
         if(empty(self::$configureStack))
             throw new SPDOException("SPDO::setConfigure() the connection settings to the database must be installed before");
+
         if($initConnect)
-            $this->initConnect($connectName);
+            $this->openConnect($connectName);
     }
 
 
@@ -130,7 +131,7 @@ class SPDO
 
 
     /** @var array $instances */
-    private static $instances = [];
+    public static $instances = [];
 
 
     /**
@@ -152,7 +153,7 @@ class SPDO
      * @param string $connectName
      * @return SPDO|null
      */
-    public static function init($connectName='db')
+    public static function open($connectName='')
     {
         /** @var SPDO $instance */
         $instance = self::getInstance($connectName);
@@ -166,10 +167,10 @@ class SPDO
      * @param string $connectName
      * @return SPDO|SPDOException
      */
-    public function initConnect($connectName='db')
+    public function openConnect($connectName='')
     {
         $this->clearConnect(false);
-        $connectName = $connectName=='db' ? key(self::$configureStack) : $connectName;
+        $connectName = $this->defaultConnection($connectName);
 
         if(!empty(self::$configureStack[$connectName]))
         {
@@ -188,6 +189,16 @@ class SPDO
         else
             throw new SPDOException("Error initializing, connectName: $connectName not found in the configuration of connection parameters");
         return $this;
+    }
+
+
+
+    private function defaultConnection($connectName)
+    {
+        if(!$connectName || $connectName=='default')
+            $connectName = key(self::$configureStack);
+
+        return $connectName;
     }
 
 
@@ -266,26 +277,35 @@ class SPDO
      *<pre>
      * Example:
      *  ->querySql('SELECT * FROM table')
-     *  ->querySql('SELECT * FROM table WHERE id = ? AND role = ?', [1, 'some']);
+     *  ->querySql('SELECT * FROM table WHERE id = ? AND role = ?',
+     *      [
+     *          1,
+     *          'some'
+     *      ]);
      *  ->querySql('SELECT * FROM table WHERE type = :type AND role = :role',
      *      [
      *          ':type'=>'some',
      *          ':role'=>'some'
-     *      ]
-     *  );
+     *      ]);
      *</pre>
      *
-     * @param $prepare
-     * @param array $parameters
-     * @return bool | \PDOStatement
+     * @param string $prepare   Prepared Statements подготовленныей SQL запрос
+     * @param array|string $parameters placeholders параметры. Значение всегда принимается как строка, подобно PDO::bindValue()
+     * @return bool|\PDOStatement
      */
-    public function querySql($prepare, array $parameters=[])
+    public function querySql($prepare, $parameters=null)
     {
         if($this->dbh)
         {
             $this->clearConnect(false);
+
+            if(strpos($prepare,':') && strpos($prepare,'?')) {
+                $prepare = preg_replace('|:\w+|',' ? ', $prepare);
+                $parameters = array_values($parameters);
+            }
+
             $this->sql['prepare'] = $prepare;
-            $this->sql['parameters'] = !empty($parameters)?$parameters:[];
+            $this->sql['parameters'] = (array) $parameters;
 
             if(is_callable($this->callBefore)) call_user_func($this->callBefore);
 
@@ -385,7 +405,7 @@ class SPDO
     public function queryUpdate($tableName, array $columnData, $criteria, $parameters=[])
     {
         $columns = array_keys($columnData);
-        $criteria = preg_replace('|:\w+|',' ? ', $criteria);
+        //$criteria = preg_replace('|:\w+|',' ? ', $criteria);
         $parameters = array_values(array_merge($columnData,$parameters));
 
         $sql = sprintf("UPDATE %s SET %s WHERE %s",

@@ -78,12 +78,12 @@ $result = $db->update('table_name',$updData,'id=:id',[':id'=>10]);
 
 
 // DELETE
-$result = $db->delete('records','id=:id',[':id'=>'10']);
+$result = $db->delete('table_name','id=:id',[':id'=>'10']);
 
 
 
 // select with error
-$db->select('some, next','records','id=:id',[':id'=>10]);
+$db->select('some, next','table_name','id=:id',[':id'=>10]);
 
 // Show error text if there are
 if($error = $db->getError()){

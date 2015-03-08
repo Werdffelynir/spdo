@@ -96,12 +96,11 @@ class SPDO extends \PDO
 
     /**
      * @param string    $table
-     * @param array     $columns
      * @return array
      */
-     public function tableInfo($table, array $columns = []) {
+     public function tableInfo($table) {
         $driver = $this->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $fields = [];
+
         if($driver == 'sqlite') {
             $sql = "PRAGMA table_info('" . $table . "');";
             $key = "name";
@@ -113,13 +112,8 @@ class SPDO extends \PDO
             $key = "column_name";
         }
 
-        if(false !== ($list = $this->run($sql))) {
-            if(empty($columns))
-                return $list;
-
-            foreach($list as $record)
-                $fields[] = $record[$key];
-            return array_values(array_intersect($fields, $columns));
+        if(false !== ($columns = $this->run($sql))) {
+            return $columns;
         }
         return array();
     }

@@ -10,7 +10,7 @@ if(!$tableExist)
     die('Table "records" not exists!');
 
 
-$menu = $db->select('id,link,title', 'records','active=?',1);
+$menu = $db->select('id, link, title', 'records','active=?', 1);
 
 
 $contentBlog = false;
@@ -34,7 +34,7 @@ if(isset($_GET['rec']) && ($link = $_GET['rec'])){
 
 }else{
 
-    $contentBlog = $records = $db->select('*', 'records','active=?',1);
+    $contentBlog = $records = $db->select('*', 'records','active=?', 1);
 
 }
 

@@ -31,56 +31,56 @@ executeQuery($sql, $bind=null, $fetchAll=true)
 **SPDO::executeOne**
 
 Execute SQL string `$sql`. Return one row data. 
-```
+```php
 executeOne($sql, $bind=null)
 ```
 
 **SPDO::executeAll**
 
 Execute SQL string. Return all data.
-```
+```php
 executeAll($sql, $bind=null)
 ```
 
 **SPDO::tableInfo**
 
 Get information of table, `$table` - table name. Return array with full detail.
-```
+```php
 tableInfo($table) 
 ```
 
 **SPDO::select**
 
 Simplified method SELECT data. `$fields` - string, selected fields of `*`. `$table` - string, table name. `$where` - string, filter. `$bind` - array, parameter identifier. `$fetchAll` - bool. 
-```
+```php
 select($fields, $table, $where="", $bind=null, $fetchAll=true)
 ```
 
 **SPDO::insert**
 
 Simplified method INSERT data.
-```
+```php
 insert($table, array $columnData)
 ```
 
 **SPDO::delete**
 
 Simplified method DELETE data.
-```
+```php
 delete($table, $where, $bind=null)
 ```
 
 **SPDO::update**
 
 Simplified method UPDATE data.
-```
+```php
 update($table, array $columnData, $where, $bind=null)
 ```
 
 **SPDO::getError**
 
 Get error info. `$row` it's type info, can take - `error`, `sql` or `bind` and return string, default false return array with all types.
-```
+```php
 getError($row=false)
 ```
 
@@ -105,7 +105,7 @@ if($error = $db->getError()){
 
 
 ### Examples with are different placeholders
-```
+```php
 $result = $db->executeAll('SELECT * FROM table_name WHERE id=:id',['id'=>5]);
 // equally
 $result = $db->executeAll('SELECT * FROM table_name WHERE id=?',5);
@@ -117,8 +117,8 @@ $result = $db->select('id, title, description','table_name','id=:id',[':id'=>5],
 
 
 ### Example INSERT
-```
-// issue data
+```php
+// issue data to insert
 $insData = [
     'title' => 'Insert Record',
     'description' => 'Insert record description!'
@@ -129,7 +129,7 @@ $lastInsertId = $db->lastInsertId(); // get insert id
 
 
 ### Example UPDATE
-```
+```php
 // data to update
 $updData = [
     'title' => 'Insert 2 Snippet',
@@ -147,13 +147,13 @@ $result = $db->update('table_name',$updData,'id=:id',[':id'=>10]);
 
 
 ### Example DELETE
-```
+```php
 $result = $db->delete('table_name','id=:id',[':id'=>'10']);
 ```
 
 
 ### You also can use all the methods PDO/PDOStatement directly, like:
-```
+```php
     $sql = "
         SELECT r.id, r.title, r.description, u.name, u.email
         FROM records r

@@ -1,7 +1,7 @@
 # Simple PDO
 
 ## This Simple PDO wrapper on PHP, client for quick working with database
-Class SPDO extends standard PHP PDO, you can use it. 
+Class SPDO extends standard PHP PDO, you can use it.
 
 ### Tested on
 - SQLite
@@ -22,54 +22,63 @@ example:
 ### Methods
 
 **SPDO::executeQuery**
+
 Execute SQL string `$sql`. `$bind` - array (if it is a string, value is converted to an array) of parameter identifier, for a prepared statement using named placeholders or question mark placeholders. If argument `$fetchAll` is `true` apply `PDOStatement::fetchAll`, else `PDOStatement::fetch`
-```
+```php
 executeQuery($sql, $bind=null, $fetchAll=true)
 ```
 
 **SPDO::executeOne**
+
 Execute SQL string `$sql`. Return one row data. 
 ```
 executeOne($sql, $bind=null)
 ```
 
 **SPDO::executeAll**
+
 Execute SQL string. Return all data.
 ```
 executeAll($sql, $bind=null)
 ```
 
 **SPDO::tableInfo**
+
 Get information of table, `$table` - table name. Return array with full detail.
 ```
 tableInfo($table) 
 ```
 
 **SPDO::select**
+
 Simplified method SELECT data. `$fields` - string, selected fields of `*`. `$table` - string, table name. `$where` - string, filter. `$bind` - array, parameter identifier. `$fetchAll` - bool. 
 ```
 select($fields, $table, $where="", $bind=null, $fetchAll=true)
 ```
 
 **SPDO::insert**
+
 Simplified method INSERT data.
 ```
 insert($table, array $columnData)
 ```
 
 **SPDO::delete**
+
 Simplified method DELETE data.
 ```
 delete($table, $where, $bind=null)
 ```
 
 **SPDO::update**
-Simplified method DELETE data.
+
+Simplified method UPDATE data.
 ```
 update($table, array $columnData, $where, $bind=null)
 ```
 
 **SPDO::getError**
+
 Get error info. `$row` it's type info, can take - `error`, `sql` or `bind` and return string, default false return array with all types.
 ```
 getError($row=false)
@@ -77,7 +86,7 @@ getError($row=false)
 
 
 ### Use
-```
+```php
 include('db/SPDO.php');
 
 // create instance
@@ -94,6 +103,7 @@ if($error = $db->getError()){
 }
 ```
 
+
 ### Examples with are different placeholders
 ```
 $result = $db->executeAll('SELECT * FROM table_name WHERE id=:id',['id'=>5]);
@@ -105,6 +115,7 @@ $result = $db->select('*','records','id=?',5);
 $result = $db->select('id, title, description','table_name','id=:id',[':id'=>5], false);
 ```
 
+
 ### Example INSERT
 ```
 // issue data
@@ -115,6 +126,7 @@ $insData = [
 $result = $db->insert('table_name', $insData); // run operation
 $lastInsertId = $db->lastInsertId(); // get insert id
 ```
+
 
 ### Example UPDATE
 ```
@@ -128,16 +140,16 @@ $result = $db->update('table_name',$updData,'id=?','10'); // equally with previo
 // generated: UPDATE table_name SET title=?, description=? WHERE id=?;
 
 
-// BEWARE! peculiar of the method `update`: named placeholders always convert to question mark placeholders. 
-// Use question mark placeholders to avoid errors
+// BEWARE! peculiar of the method `update`: named placeholders always convert to 
+// question mark placeholders. Use question mark placeholders to avoid errors.
 $result = $db->update('table_name',$updData,'id=:id',[':id'=>10]);
 ```
+
 
 ### Example DELETE
 ```
 $result = $db->delete('table_name','id=:id',[':id'=>'10']);
 ```
-
 
 
 ### You also can use all the methods PDO/PDOStatement directly, like:

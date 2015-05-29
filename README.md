@@ -21,48 +21,55 @@ example:
 
 ### Methods
 
-**executeQuery**
-
+**SPDO::executeQuery**
 Execute SQL string `$sql`. `$bind` - array (if it is a string, value is converted to an array) of parameter identifier, for a prepared statement using named placeholders or question mark placeholders. If argument `$fetchAll` is `true` apply `PDOStatement::fetchAll`, else `PDOStatement::fetch`
 ```
 executeQuery($sql, $bind=null, $fetchAll=true)
 ```
 
+**SPDO::executeOne**
 Execute SQL string `$sql`. Return one row data. 
 ```
 executeOne($sql, $bind=null)
 ```
 
+**SPDO::executeAll**
 Execute SQL string. Return all data.
 ```
 executeAll($sql, $bind=null)
 ```
 
+**SPDO::tableInfo**
 Get information of table, `$table` - table name. Return array with full detail.
 ```
 tableInfo($table) 
 ```
 
+**SPDO::select**
 Simplified method SELECT data. `$fields` - string, selected fields of `*`. `$table` - string, table name. `$where` - string, filter. `$bind` - array, parameter identifier. `$fetchAll` - bool. 
 ```
 select($fields, $table, $where="", $bind=null, $fetchAll=true)
 ```
 
+**SPDO::insert**
 Simplified method INSERT data.
 ```
 insert($table, array $columnData)
 ```
 
+**SPDO::delete**
 Simplified method DELETE data.
 ```
 delete($table, $where, $bind=null)
 ```
 
+**SPDO::update**
 Simplified method DELETE data.
 ```
 update($table, array $columnData, $where, $bind=null)
 ```
 
+**SPDO::getError**
 Get error info. `$row` it's type info, can take - `error`, `sql` or `bind` and return string, default false return array with all types.
 ```
 getError($row=false)

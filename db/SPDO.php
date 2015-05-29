@@ -1,4 +1,7 @@
 <?php
+/**
+ * last upd: 01.04.15
+ */
 
 
 namespace db;
@@ -276,8 +279,5 @@ class SPDO extends \PDO
         }else
             return false;
     }
-
-
-
 
 }

@@ -1,7 +1,7 @@
 # Simple PDO
 
 ## This Simple PDO wrapper on PHP, client for quick working with database
-Class SPDO extends standard PHP PDO, you can use it.
+Class SPDO extends standard [PHP PDO](http://php.net/manual/en/book.pdo.php), you can use it.
 
 ### Tested on
 - SQLite

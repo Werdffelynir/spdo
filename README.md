@@ -14,8 +14,8 @@ Class SPDO extends standard PHP PDO, you can use it.
 SPDO class constructor accept configuration of connect to database - like [PDO](http://php.net/manual/en/pdo.construct.php) arguments
 
 example: 
-sqlite `$db = new SPDO('sqlite:my/path/database.db');`
-mysql `$db = new SPDO('mysql:host=localhost;dbname=database', $user, $passwd);`
+sqlite `$db = new SPDO('sqlite:my/path/database.db');`.
+mysql `$db = new SPDO('mysql:host=localhost;dbname=database', $user, $passwd);`.
 
 
 ### Methods

@@ -11,7 +11,7 @@ Class SPDO extends standard [PHP PDO](http://php.net/manual/en/book.pdo.php), yo
 
 
 ### Configuration
-SPDO class constructor accept configuration of connect to database - like [PDO](http://php.net/manual/en/pdo.construct.php) arguments
+SPDO class constructor accept configuration of connect to database - like [PDO construct parameters](http://php.net/manual/en/pdo.construct.php#refsect1-pdo.construct-parameters).
 
 
 example:

@@ -21,7 +21,7 @@ example:
 
 ### Methods
 
-**executeQuery
+**executeQuery**
 
 Execute SQL string `$sql`. `$bind` - array (if it is a string, value is converted to an array) of parameter identifier, for a prepared statement using named placeholders or question mark placeholders. If argument `$fetchAll` is `true` apply `PDOStatement::fetchAll`, else `PDOStatement::fetch`
 ```

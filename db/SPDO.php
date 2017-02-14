@@ -1,6 +1,6 @@
 <?php
 /**
- * last upd: 01.04.15
+ * @update: 14.02.2017
  */
 
 
@@ -194,8 +194,8 @@ class SPDO extends \PDO
     public function insert($table, array $columnData) {
         $columns = array_keys($columnData);
         $sql = sprintf("INSERT INTO %s (%s) VALUES (%s);",
-            $table,
-            implode(', ', $columns),
+            ' `' . $table . '` ',
+            ' `' . implode('`, `', $columns) . '` ',
             implode(', ', array_fill(0, count($columnData), '?'))
         );
         return $this->executeQuery($sql, array_values($columnData));
@@ -246,8 +246,8 @@ class SPDO extends \PDO
         else
             $bind = array_values(array_merge($columnData, (array) $bind));
         $sql = sprintf("UPDATE %s SET %s WHERE %s;",
-            $table,
-            implode('=?, ', $columns) . '=?',
+            ' `' . $table . '` ',
+            ' `' . implode('`=?, `', $columns) . '` = ? ',
             $where
         );
         return $this->executeQuery($sql, $bind);

@@ -1,9 +1,9 @@
 <?php
 
-include('../db/SPDO.php');
+include 'bootstrap.php';
 
 
-$db = new SPDO('sqlite:database.sqlite');
+$db = new \db\SPDO(DB_HOST);
 
 $tableExist = $db->tableInfo('records');
 if(!$tableExist)
@@ -45,108 +45,20 @@ if(isset($_GET['rec']) && ($link = $_GET['rec'])){
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
-    <style>
-        *{margin:0;padding:0;}
-        .page{
-            width: 860px;
-            margin: 0 auto;
-            font-family: 'Ubuntu Condensed', 'Ubuntu', sans-serif;
-            font-size: 90%;
-        }
-        .header{
-            height: 40px;
-            text-align: center;
-            border-bottom: 2px solid cadetblue;
-        }
-        .menu{
-            display: inline-block;
-            width: 25%; padding: 10px 0;
-            border-right: 2px solid cadetblue;
-            background: cadetblue;
-        }
-        .menu a{
-            display: block;
-            padding: 3px 10px;
-            background: cadetblue;
-            font-size: 75%;
-            color: aliceblue;
-            text-decoration: none;
-        }
-        .menu a:hover{
-            background: #236264;
-            color: aliceblue;
-        }
-        .content{
-            display: inline-block;
-            width: 74%;
-            float: right;
-        }
-        .footer{
-            padding-top: 30px;
-            padding-bottom: 30px;
-            clear: both;
-            text-align: center;
-            font-size: 75%;
-            font-weight: bold;
-        }
-
-        .record{}
-        .back{
-            text-align: right;
-        }
-        .back a{
-            display: inline-block;
-            padding: 2px 15px;
-            background: cadetblue;
-            text-decoration: none;
-            font-weight: bold;
-            color: aliceblue;
-        }
-        .record h2{
-            padding-bottom: 10px;
-        }
-        .record .desc{
-            padding-bottom: 10px;}
-        .record .author{
-            font-size: 80%;
-            font-weight: bold;
-            color: indigo;
-        }
-
-        .records{
-            padding: 5px 0;
-            border-bottom: 1px solid cadetblue;
-        }
-        .records h2 a{
-            color: #236264;
-            text-decoration: none;
-        }
-        .records .desc{
-            font-size: 80%;
-            padding: 5px 0 5px 25px;
-        }
-        .records .more{
-            text-align: right;
-            margin-bottom: -5px;
-        }
-        .records .more a{
-            display: inline-block;
-            padding: 2px 15px;
-            background: cadetblue;
-            text-decoration: none;
-            font-weight: bold;
-            color: aliceblue;
-        }
-
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="page">
         <div class="header"><h1>Blog</h1></div>
         <div class="menu">
+            <div class="menu-admin table text-center">
+                <a href="/index.php">Main page</a>
+                <a href="/admin.php">Create new</a>
+            </div>
             <?php foreach($menu as $item): ?>
-                <p>
+                <p class="table">
                     <a href="/index.php?rec=<?= $item['link']?>"><?= $item['title']?></a>
+                    <a href="/admin.php?edit=<?= $item['link']?>">[edit]</a>
                 </p>
             <?php endforeach; ?>
         </div>
